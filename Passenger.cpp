@@ -10,7 +10,7 @@
   // Preconditions: None
   // Postconditions: Creates a new Passenger
 Passenger::Passenger()
-    :m_number(-1), m_line(""), m_startLocation(""), m_finalDestination(""){} //initialization list.     
+    :m_number(-1), m_line("N/A"), m_startLocation("N/A"), m_finalDestination("N/A"){} //assigned default values     
 
 // Name: Passenger(int, string, string, string)
   // Desc: Overloaded Constructor for a passenger including number, line,
