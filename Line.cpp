@@ -87,6 +87,48 @@ void Line::PrintLineDetails(){
   // There will always be at least two stops (start != stop)
   // For example, if the line is station 1 to station 2, the distance is 2
   // If the line is station 1 to station 4, the distance is 4
-  int Line::CalculateDistance(string start, string end){
-    
-  }
+int Line::CalculateDistance(string start, string end){
+    int count = 1;
+    Stop* startPtr = m_head;
+    Stop* endPtr = m_head;
+    Stop* temp;
+    //flag for input val
+    bool startExists = false; 
+    bool endExists = false; 
+
+    //input val for start
+    temp = m_head;
+    while(temp != nullptr){
+        if (temp->GetName() == start)
+            startExists = true;
+        temp = temp->GetNext();
+    }
+    //input val for start
+    temp = m_head;
+    while(temp != nullptr){
+        if (temp->GetName() == end)
+            endExists = true;
+        temp = temp->GetNext();
+    }
+
+    if(startExists && endExists){
+        //iterate through the line and fine the start node
+        while(startPtr->GetName() != start){
+            startPtr = startPtr->GetNext();
+        }
+        //iterate through the line and fine the end node
+        while(endPtr->GetName() != end){
+            endPtr = endPtr->GetNext();
+        }
+        //for loop to count each node from start param to end param
+        for (Stop* temp = startPtr; temp != endPtr; temp = temp->GetNext()){
+            count++;
+        }
+        return count;
+    }
+    //Invalid input message
+    else{
+        cout << "Invalid input, stop or end does not exist in this line" << endl;
+        return -1; //-1 to signal an error
+    }
+}

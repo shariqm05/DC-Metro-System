@@ -8,15 +8,13 @@
   // Desc - Default constructor for a Stop node
   // Preconditions - None
   // Postconditions - Creates a new Stop (for the Route)
-Stop::Stop()
-    :m_number(0), m_name(""){} //assigned defualt values
+Stop::Stop():m_number(0), m_name(""){} //assigned defualt values
 
   // Name: Stop (number, name) - Overloaded Constructor
   // Desc - Overloaded constructor
   // Preconditions - Must have number and name to create new stop
   // Postconditions - Creates a new Stop (for the Line)
-Stop::Stop(int number, string name)
-    :m_number(number), m_name(name){}
+Stop::Stop(int number, string name):m_number(number), m_name(name){}
 
 //GETTERS AND SETTERS
 
@@ -42,8 +40,6 @@ Stop* Stop::GetNext(){return m_next;}
   // Desc - Sets the pointer to the next stop
   // Preconditions - Pointer has been defined
   // Postconditions - Updates m_next to next stop on Route
-void Stop::SetNext(Stop* newStop){
-    m_next = newStop;
-}
+void Stop::SetNext(Stop* newStop){m_next = newStop;}
 
 
