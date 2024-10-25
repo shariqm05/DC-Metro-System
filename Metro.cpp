@@ -9,15 +9,23 @@
   //       Calls LoadLines, LoadPassengers, and then MainMenu
   // Preconditions: None
   // Postconditions: A new metro system is created.
-Metro::Metro(){}
-
+Metro::Metro(){
+  LoadLines();
+  LoadPasses();
+  MainMenu();
+}
+ 
   // Name: Metro (overloaded constructor)
   // Desc: Populates m_fileLine and m_filePass.
   //       Calls LoadLines, LoadPassengers, and then MainMenu
   // Preconditions: Filename is included
   // Postconditions: A new metro system is created with lines and
   //                 passengers using passed input files
-Metro::Metro(string fileLine, string filePass){}
+Metro::Metro(string fileLine, string filePass):m_fileLines(fileLine),m_filePass(filePass){
+  LoadLines();
+  LoadPasses();
+  MainMenu();
+}
 
 // Name:  Metro (destructor)
   // Preconditions: None
@@ -32,9 +40,9 @@ Metro::~Metro(){
     for(int i = 0; i < m_passengers.size(); i++){
         delete m_passengers[i]; //delete that passenger
     }
-    //reset both vector lengths
-    m_lines.resize(0);
-    m_passengers.resize(0);
+    //clear both vector lengths
+    m_lines.clear();
+    m_passengers.clear();
 }
 
 //FUNCTIONS
@@ -55,47 +63,18 @@ void Metro::LoadLines(){
   Line* orangeLine = new Line("orange");
 
 
-  ifstream m_fileLines("proj3_stations.txt"); //sets m_fileLines to the input text file explicitly, since theres only 1
-  string line; //represents a a single line, for a single stop's info
+  ifstream file(m_fileLines); 
 
   //opening and processing stops into respective Lines
-  if (m_fileLines.is_open()){
-    while(getline(m_fileLines, line)){
-      //variabels for a single stop
-      int num; //Stop number
-      string lineName; //lineName
-      string stationName; //StationName
+  if (file.is_open()){
+    string numStr, lineName, stationName; //variables for a singl stop
+    char delim = ','; //delimiter
 
-      char delim = ',';
-      int pos = 0; //string index
-      string extractorString = ""; //an empty string which we'll load characters to extract variables
-
-
-      //stop Number (num)
-      while(pos < line.length() && line.at(pos) != delim){
-        extractorString = extractorString + line.at(pos); //add character to the string holder
-        pos++; //move index down one
-      }
-      pos++; //one more increment to move past the delimiter.
-      num = stoi(extractorString); //stoi to conver to int
-      extractorString = ""; //clear the string for next variable
-      
-      //lineName (color of line)
-      while(pos < line.length() && line.at(pos) != delim){
-        extractorString = extractorString + line.at(pos); //add character to the string holder
-        pos++; //move index down one
-      }
-      pos++; //one more increment to move past the delimiter.
-      lineName = extractorString;
-      extractorString = ""; //clear the string for next variable
-
-      //stationName
-      while(pos < line.length()){ 
-        extractorString = extractorString + line.at(pos); //add character to the string holder
-        pos++; //move index down one
-      }
-      pos++; //one more increment to move past the delimiter.
-      stationName = extractorString; //stoi to conver to int
+    while(getline(file, numStr, delim) &&
+          getline(file, lineName, delim) &&
+          getline(file, stationName)){
+    
+      int num = stoi(numStr); //convert to an actual int
 
       //adding the stop to its respective line
       if (lineName == "red"){
@@ -118,7 +97,7 @@ void Metro::LoadLines(){
       }
     }     
   }
-  m_fileLines.close(); //close the input file
+  file.close(); //close the input file
   //add all 6 populataed lines to the line vector
   m_lines.push_back(redLine);
   m_lines.push_back(greenLine);
@@ -133,7 +112,27 @@ void Metro::LoadLines(){
   //       from input file
   // Preconditions: Valid file name of lines
   // Postconditions: Loads all passengers in input file to m_passengers
-  void Metro::LoadPasses(){} 
+void Metro::LoadPasses(){
+
+  ifstream file(m_filePass);
+  if(file.is_open()){
+
+    string numStr, line, startLoc, endLoc; //variables for a singl passenger
+    char delim = ','; //delimiter
+
+    while(getline(file, numStr, delim) &&
+          getline(file, line, delim) &&
+          getline(file, startLoc, delim) &&
+          getline(file, endLoc)){
+    
+      //create and store passenger in the passenger Vector
+      int num = stoi(numStr); //convert to an actual int
+      Passenger* temp = new Passenger(num, line, startLoc, endLoc);
+      m_passengers.push_back(temp);
+    }
+  }
+  file.close(); 
+} 
 
 // Name: LineToIndex
   // Desc: Returns the index of the line based on the name
