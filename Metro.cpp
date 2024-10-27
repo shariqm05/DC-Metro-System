@@ -34,7 +34,7 @@ Metro::Metro(string fileLine, string filePass):m_fileLines(fileLine),m_filePass(
 Metro::~Metro(){
     //for emptying Line vector
     for(int i = 0; i < m_lines.size(); i++){ 
-        delete m_lines[i]; //delete that line (line destructor)
+        delete m_lines[i]; //delete that line and any stops in it (line destructor)
     }
     //for emptying Passenger vector
     for(int i = 0; i < m_passengers.size(); i++){
@@ -139,27 +139,51 @@ void Metro::LoadPasses(){
   //       For example, if the red line is in m_lines index 0, returns 0
   // Preconditions: m_lines must be populated
   // Postconditions: Returns the index of the line based on the name
-  int Metro::LineToIndex(string name){}
+int Metro::LineToIndex(string name){
+  for (int i = 0; i < m_lines.size(); i++){
+    if (m_lines[i]->GetLineName()== name){ //if it matches the param
+      return i; //return index
+    }
+  }
+  //input val
+  cout << "Line not found. Pleaas enter valid line name." << endl;
+  return -1;
+}
 
   // Name: MainMenu
   // Desc: Asks user to Display Lines, Display Passengers per Line,
   //       Calculate Earnings by Line, or exit.
   // Preconditions: None
   // Postconditions: When exit, quits program with no memory leaks or errors
-  void Metro::MainMenu(){}
+void Metro::MainMenu(){}
 
    // Name:  DisplayLines
   // Desc: Iterates over the vector and calls the
   //       PrintLineDetails for each line
   // Preconditions: At least one line in m_lines;
   // Postconditions: Displays details of each line in m_lines
-  void Metro::DisplayLines(){}
+void Metro::DisplayLines(){  
+  for (int i = 0; i < m_lines.size(); i++){
+    m_lines[i]->PrintLineDetails(); //print out info for the line
+  }
+}
 
   // Name:  DisplayPassengers
   // Desc: Displays information about each passenger from each line
   // Preconditions: Has line loaded and passenger loaded
   // Postconditions: Displays information about each passenger
-  void Metro::DisplayPassengers(){}
+void Metro::DisplayPassengers(){
+  for (int j = 0; j < m_lines.size(); j++){
+    string line = m_lines[j]->GetLineName(); //current line we are searching passengers for
+    cout << "** " << line << " **\tPassengers:" << endl;
+    for (int i = 0; i < m_passengers.size(); i++){
+      if (m_passengers[i]->GetLine() == line){
+        m_passengers[i]->DisplayPassenger(); //displat singular passenger's info
+      }
+    }
+    cout << "\t" << endl; //indednt after one line of passengers is displayed
+  }
+}
 
 // Name:  CalcEarnings()
   // Desc: Displays total earnings based on passengers
