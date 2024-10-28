@@ -33,11 +33,11 @@ Metro::Metro(string fileLine, string filePass):m_fileLines(fileLine),m_filePass(
   //                 All vectors are cleared out.
 Metro::~Metro(){
     //for emptying Line vector
-    for(int i = 0; i < m_lines.size(); i++){ 
+    for(unsigned int i = 0; i < m_lines.size(); i++){ 
         delete m_lines[i]; //delete that line and any stops in it (line destructor)
     }
     //for emptying Passenger vector
-    for(int i = 0; i < m_passengers.size(); i++){
+    for(unsigned int i = 0; i < m_passengers.size(); i++){
         delete m_passengers[i]; //delete that passenger
     }
     //clear both vector lengths
@@ -140,8 +140,8 @@ void Metro::LoadPasses(){
   // Preconditions: m_lines must be populated
   // Postconditions: Returns the index of the line based on the name
 int Metro::LineToIndex(string name){
-  for (int i = 0; i < m_lines.size(); i++){
-    if (m_lines[i]->GetLineName()== name){ //if it matches the param
+  for (unsigned int i = 0; i < m_lines.size(); i++){
+    if (m_lines[i]->GetLineName() == name){ //if it matches the param
       return i; //return index
     }
   }
@@ -155,7 +155,39 @@ int Metro::LineToIndex(string name){
   //       Calculate Earnings by Line, or exit.
   // Preconditions: None
   // Postconditions: When exit, quits program with no memory leaks or errors
-void Metro::MainMenu(){}
+void Metro::MainMenu(){
+  bool looping = true; //flag for program execution
+  
+  while(looping){
+    //main menu prompt
+    cout << "\nWhat would you like to do?" << endl;
+    cout << "1. Display Lines" << endl;
+    cout << "2. Display Passengers by Line:" << endl;
+    cout << "3. Calculate Earnings by Line:" << endl;
+    cout << "4. Exit" << endl;
+    //user input logic
+    int command;
+    cin >> command;
+    switch(command){
+      case 1: 
+        DisplayLines();
+        break;
+      case 2:
+        DisplayPassengers();
+        break;
+      case 3:
+        CalcEarnings();
+        break;
+      case 4: //quits program
+        cout << "Thank you for using the Metro" << endl;
+        looping = false;
+        break;
+
+      default: //input val
+        cout << "Invalid input: Please enter a number from 1 through 4" <<endl;
+    }
+  }
+}
 
    // Name:  DisplayLines
   // Desc: Iterates over the vector and calls the
@@ -163,7 +195,7 @@ void Metro::MainMenu(){}
   // Preconditions: At least one line in m_lines;
   // Postconditions: Displays details of each line in m_lines
 void Metro::DisplayLines(){  
-  for (int i = 0; i < m_lines.size(); i++){
+  for (unsigned int i = 0; i < m_lines.size(); i++){
     m_lines[i]->PrintLineDetails(); //print out info for the line
   }
 }
@@ -173,15 +205,15 @@ void Metro::DisplayLines(){
   // Preconditions: Has line loaded and passenger loaded
   // Postconditions: Displays information about each passenger
 void Metro::DisplayPassengers(){
-  for (int j = 0; j < m_lines.size(); j++){
+  for (unsigned int j = 0; j < m_lines.size(); j++){
     string line = m_lines[j]->GetLineName(); //current line we are searching passengers for
-    cout << "** " << line << " **\tPassengers:" << endl;
-    for (int i = 0; i < m_passengers.size(); i++){
+    cout << "** " << line << " Line **\nPassengers:" << endl;
+    for (unsigned int i = 0; i < m_passengers.size(); i++){
       if (m_passengers[i]->GetLine() == line){
         m_passengers[i]->DisplayPassenger(); //displat singular passenger's info
       }
     }
-    cout << "\t" << endl; //indednt after one line of passengers is displayed
+    cout << "\n" << endl; //indednt after one line of passengers is displayed
   }
 }
 
@@ -190,4 +222,25 @@ void Metro::DisplayPassengers(){
   //       Displays earnings by line
   // Preconditions: Has lines and passengers loaded
   // Postconditions: Displays line with stop data
-  void Metro::CalcEarnings(){}
+void Metro::CalcEarnings(){
+  //line vector loop
+  for (unsigned int i = 0; i < m_lines.size(); i++){
+    double total = 0;
+    int totalStops = 0;
+    double cost;
+    cout << "\n** " << m_lines[i]->GetLineName() << " Line Earnings **" << endl;
+    //passenger vector loop
+    for (unsigned int j = 0; j < m_passengers.size(); j++){
+      if (m_passengers[j]->GetLine() == m_lines[i]->GetLineName()){
+        //calculates number od stops for the individual passenger
+        int numStops = m_lines[i]->CalculateDistance(m_passengers[j]->GetStartLocation(), m_passengers[j]->GetFinalDestination()); 
+        //set the total cost of the passenger and add it to the line's total revenue
+        cost = numStops * PER_STOP;
+        total += cost;
+        totalStops += numStops; //update number of stops traveled on the line
+      }
+    }
+    cout << "$" << total << endl;
+    cout << "Total Stops: " << totalStops << endl;
+  }
+}

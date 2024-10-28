@@ -59,8 +59,8 @@ void Line::AddStop(int num, string name){
         m_tail->SetNext(temp); // set last node to point at temp
         temp->SetNext(nullptr); //set newly added Stop at the end of the line to nullptr
         m_tail = temp; //update m_tail to represent new end of the line
-        temp = nullptr; //free the temp ptr
     }
+    m_totalStops++; //increment total stops variable
     temp = nullptr; //free the temp ptr
   }
 
